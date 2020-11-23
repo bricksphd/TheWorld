@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset='utf-8'>
+  <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+  <title>Binary Tree</title>
+  <meta name='viewport' content='width=device-width, initial-scale=1'>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/5.9.7/d3.min.js"></script>
+  <style>
+    .circle-text {
+      fill: white;
+      text-anchor: middle;
+      font-family: 'Roboto', sans-serif;
+      transform: translate(0, 3px);
+    }
+  </style>
+</head>
+
+<body>
+  <svg width="500" height="500" id="mySVG"></svg>
+  <div id="population"></div>
+  <select id="selector" onchange=comboChange(this.value)>
+  </select>
+  <script src="./data.js"></script>
+  <script>
+
+    //https://blog.abelotech.com/posts/number-currency-formatting-javascript/#:~:text=There%20are%20many%20different%20ways%20of%20printing%20an,expression%3A%20%28%3F%3D%20%28d%20%7B3%7D%29%2B%20%28%3F%21d%29%29%20replacement%20value%3A%20%241%2C
+    function formatNumber(num) {
+      return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')
+    }
+
+
+    let partition = "everyone";
+    let squareofSquares = 8;
+    let squares = squareofSquares * squareofSquares;
+    let worldPopulation = 7_800_000_000;
+    let peoplePerSquare = worldPopulation / squares;
+    console.log(peoplePerSquare);
+    document.getElementById("population").innerText = "Each square represents " + formatNumber(Math.ceil(peoplePerSquare)) + " people."
+
+    const width = 800;
+    const height = 800;
+    const margin = 2;
+
+
+
+    //Populate the selector (combo box/drop down)
+    let selector = document.getElementById("selector");
+    for (let array of arrays) {
+      let option = document.createElement("option");
+      option.text = array.partition;
+      option.value = array.partition;
+      selector.add(option);
+    }
+
+    const facts = [];
+    for(let i = 0; i < squares; i++){
+      facts.push({
+        i,
+        percentStart:i/squares,
+        percentEnd:(i+1)/squares,
+      });
+    }
+
+    
+    for(let a = 0; a < arrays.length; a ++){
+      let array = arrays[a];
+      let sumPercent  = 0;
+      let percentIndex = 0;
+      let cummulativePercent = 0;
+      let x = 0; 
+      let y = 0;
+      for(let i = 0; i < squares; i++){
+        let fact = facts[i];
+        while(fact.percentEnd > cummulativePercent + array.array[percentIndex].percent){
+          cummulativePercent += array.array[percentIndex].percent;
+          percentIndex++;
+          if(x != 0 && y != 0){
+            if(x != 0){
+              y++;
+              x = 0;
+            }
+          }
+        }
+        if(fact.percentEnd <= cummulativePercent + array.array[percentIndex].percent){
+          let partition = array.partition; 
+          fact[partition] = {};
+          fact[partition].type = array.array[percentIndex].name;
+          fact[partition].x = x;
+          fact[partition].y = y;
+          x++;
+          if(x >= squareofSquares){
+            x = 0;
+            y++;
+          }
+        }
+        else{
+          console.error("You shouldn't be here.")
+        }
+
+      }
+    }
+
+    // const facts = [];
+    // for (let i = 0; i < squares; i++) {
+    //   fact = {};
+    //   for (let a = 0; a < arrays.length; a++) {
+    //     let sum = 0;
+    //     let beforeSum = 0;
+    //     let array = arrays[a];
+
+    //     for (let j = 0; j < array.array.length; j++) {
+    //       fact[array.partition] = {};
+    //       let myPercent = (i+1) / squares;
+
+    //       sum += array.array[j].percent;
+    //       if (myPercent < sum) {
+    //         fact[array.partition].type = array.partition;
+
+    //         let k = (i+1) - Math.floor(squares * beforeSum);
+    //         fact[array.partition].x = k % squareofSquares;
+    //         fact[array.partition].y = Math.floor(k / squareofSquares) + Math.ceil((squares * beforeSum)) / squareofSquares + (j - 1);
+    //         break;
+    //       }
+    //       beforeSum += array.array[j].percent;
+    //     }
+    //   }
+
+    //   facts.push(fact);
+    // }
+
+    //Setup the svg elemente
+    const svg = d3.select('#mySVG');
+    svg.attr('width', width);
+    svg.attr('height', height);
+    const base = svg.append('g');
+
+    //Called when the selector changes
+    function plot() {
+      const totalMarginX = (squareofSquares + 1) * margin;
+      const totalMarginY = (squareofSquares + arrays.find(a=>a.partition == partition).array.length) * margin; //Add 1 for the split
+      const totalSquaresX = width - totalMarginX;
+      const totalSquaresY = height - totalMarginY;
+      const squareX = totalSquaresX / squareofSquares;
+      const squareY = totalSquaresY / (squareofSquares + 1);
+
+      const t = d3.transition()
+        .duration(2000)
+        .ease(d3.easeBack);
+
+      const squares = base
+        .selectAll("rect")
+        .data(facts, d => d.index)
+        .join(
+          enter => enter.append("rect"),
+          update => update,
+          exit => exit.remove(),
+        )
+        .transition()
+        .duration(2000)
+        .attr('transform', d => {
+          //let value = d.population;
+          //let count = 1;
+
+          
+
+          // for (let i = 0; i < arrays.length; i++) {
+          //   if (arrays[i].partition == partition)
+          //     [value, count] = [d[arrays[i].partition], arrays[i].array.length];
+          // }
+          // let array = arrays.find(i => i.partition == partition);
+          // [value, count] = [d[array.partition], array.array.length];
+         // return `translate(${(value.x % squareofSquares) * (squareX + margin)},${value.y * ((totalSquaresY / (squareofSquares + count)) + margin)})`;
+         let value = d[partition];
+         return `translate(${value.x * (squareX + margin)} ${value.y * (squareY + margin)})`;
+        })
+        .attr("width", squareX)
+        .attr("height", squareY)
+        .style("fill", (d, i) => {
+          let color = "black";
+          return color;
+        })
+    };
+
+    plot();
+
+    function comboChange(value) {
+      console.log(value);
+      partition = value;
+      plot();
+    }
+  </script>
+</body>
+
+</html>
