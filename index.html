@@ -33,7 +33,7 @@
 
 
     let partition = "everyone";
-    let squareofSquares = 8;
+    let squareofSquares = 33;
     let squares = squareofSquares * squareofSquares;
     let worldPopulation = 7_800_000_000;
     let peoplePerSquare = worldPopulation / squares;
@@ -56,80 +56,55 @@
     }
 
     const facts = [];
-    for(let i = 0; i < squares; i++){
+    for (let i = 0; i < squares; i++) {
       facts.push({
         i,
-        percentStart:i/squares,
-        percentEnd:(i+1)/squares,
+        percentStart: i / squares,
+        percentEnd: (i + 1) / squares,
       });
     }
 
-    
-    for(let a = 0; a < arrays.length; a ++){
+
+    for (let a = 0; a < arrays.length; a++) {
       let array = arrays[a];
-      let sumPercent  = 0;
+      let sumPercent = 0;
       let percentIndex = 0;
       let cummulativePercent = 0;
-      let x = 0; 
+      let x = 0;
       let y = 0;
-      for(let i = 0; i < squares; i++){
+      for (let i = 0; i < squares; i++) {
         let fact = facts[i];
-        while(fact.percentEnd > cummulativePercent + array.array[percentIndex].percent){
+        while (fact.percentEnd - (cummulativePercent + array.array[percentIndex].percent) > .0000001) {
+        // while (fact.percentEnd > cummulativePercent + array.array[percentIndex].percent) {
           cummulativePercent += array.array[percentIndex].percent;
           percentIndex++;
-          if(x != 0 && y != 0){
-            if(x != 0){
+          if (!(x == 0 && y == 0)) {
+            if (x != 0) {
               y++;
               x = 0;
             }
           }
         }
-        if(fact.percentEnd <= cummulativePercent + array.array[percentIndex].percent){
-          let partition = array.partition; 
+        // if (fact.percentEnd <= cummulativePercent + array.array[percentIndex].percent) {
+          let partition = array.partition;
           fact[partition] = {};
           fact[partition].type = array.array[percentIndex].name;
           fact[partition].x = x;
           fact[partition].y = y;
           x++;
-          if(x >= squareofSquares){
+          if (x >= squareofSquares) {
             x = 0;
             y++;
           }
-        }
-        else{
-          console.error("You shouldn't be here.")
-        }
+        // }
+        // else {
+        //   console.error("You shouldn't be here.")
+        // }
 
       }
     }
 
-    // const facts = [];
-    // for (let i = 0; i < squares; i++) {
-    //   fact = {};
-    //   for (let a = 0; a < arrays.length; a++) {
-    //     let sum = 0;
-    //     let beforeSum = 0;
-    //     let array = arrays[a];
 
-    //     for (let j = 0; j < array.array.length; j++) {
-    //       fact[array.partition] = {};
-    //       let myPercent = (i+1) / squares;
-
-    //       sum += array.array[j].percent;
-    //       if (myPercent < sum) {
-    //         fact[array.partition].type = array.partition;
-
-    //         let k = (i+1) - Math.floor(squares * beforeSum);
-    //         fact[array.partition].x = k % squareofSquares;
-    //         fact[array.partition].y = Math.floor(k / squareofSquares) + Math.ceil((squares * beforeSum)) / squareofSquares + (j - 1);
-    //         break;
-    //       }
-    //       beforeSum += array.array[j].percent;
-    //     }
-    //   }
-
-    //   facts.push(fact);
-    // }
 
     //Setup the svg elemente
     const svg = d3.select('#mySVG');
@@ -140,48 +115,39 @@
     //Called when the selector changes
     function plot() {
       const totalMarginX = (squareofSquares + 1) * margin;
-      const totalMarginY = (squareofSquares + arrays.find(a=>a.partition == partition).array.length) * margin; //Add 1 for the split
+      //const totalMarginY = (squareofSquares + arrays.find(a=>a.partition == partition).array.length) * margin; //Add 1 for the split
+      const totalMarginY = (Math.max(...facts.map(f => f[partition].y)) + 1) * margin; //Add 1 for the split
       const totalSquaresX = width - totalMarginX;
       const totalSquaresY = height - totalMarginY;
       const squareX = totalSquaresX / squareofSquares;
-      const squareY = totalSquaresY / (squareofSquares + 1);
+      const squareY = totalSquaresY / (Math.max(...facts.map(f => f[partition].y)) + 1);
 
       const t = d3.transition()
-        .duration(2000)
+        .duration(20000)
         .ease(d3.easeBack);
 
       const squares = base
         .selectAll("rect")
-        .data(facts, d => d.index)
+        .data(facts, d => d.i)
         .join(
           enter => enter.append("rect"),
           update => update,
           exit => exit.remove(),
         )
-        .transition()
-        .duration(2000)
-        .attr('transform', d => {
-          //let value = d.population;
-          //let count = 1;
-
-          
-
-          // for (let i = 0; i < arrays.length; i++) {
-          //   if (arrays[i].partition == partition)
-          //     [value, count] = [d[arrays[i].partition], arrays[i].array.length];
-          // }
-          // let array = arrays.find(i => i.partition == partition);
-          // [value, count] = [d[array.partition], array.array.length];
-         // return `translate(${(value.x % squareofSquares) * (squareX + margin)},${value.y * ((totalSquaresY / (squareofSquares + count)) + margin)})`;
-         let value = d[partition];
-         return `translate(${value.x * (squareX + margin)} ${value.y * (squareY + margin)})`;
-        })
-        .attr("width", squareX)
-        .attr("height", squareY)
         .style("fill", (d, i) => {
           let color = "black";
           return color;
         })
+        .transition()
+        .duration(2000)
+        .attr("width", squareX)
+        .attr("height", squareY)
+        
+        .attr('transform', d => {
+          let value = d[partition];
+          return `translate(${value.x * (squareX + margin)} ${value.y * (squareY + margin)})`;
+        })
+
     };
 
     plot();
