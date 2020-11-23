@@ -1,24 +1,24 @@
 const everyone = [
-  { name: "everyone", percent: 1 }
+  { name: "Everyone", percent: 1 }
 ]
 
 //https://ourworldindata.org/gender-ratio
 const genderPercents = [
-  { name: "female", percent: .496 },
-  { name: "male", percent: .504 }
+  { name: "Female", percent: .496 },
+  { name: "Male", percent: .504 }
 ]
 
 const continentPercents = [
-  { name: "asia", percent: .5969 },
-  { name: "africa", percent: .1636 },
-  { name: "europe", percent: .0994 },
-  { name: "north america", percent: .0779 },
-  { name: "south america", percent: .0568 },
-  { name: "oceania", percent: .0054 },
+  { name: "Asia", percent: .5969 },
+  { name: "Africa", percent: .1636 },
+  { name: "Europe", percent: .0994 },
+  { name: "North America", percent: .0779 },
+  { name: "South America", percent: .0568 },
+  { name: "Oceania", percent: .0054 },
 ]
 
 const churchMembership = [
-  { name: "member", percent: .0022 }
+  { name: "Member of the Church of Jesus Christ of Latter-day Saints", percent: .0022 }
 ];
 
 //https://en.wikipedia.org/wiki/List_of_languages_by_number_of_native_speakers#:~:text=Languages%20with%20at%20least%2010%20million%20first-language%20speakers,%20%20Indo-European%20%2037%20more%20rows%20
@@ -61,25 +61,66 @@ const englishSpeakingPercent = [
   { name: "English", percent: .0492 },
 ]
 
+const worldExtremePoverty = [
+  {name:"Living Extreme Poverty", percent:.1},
+]
+
+const sanitaryToilets = [
+  {name:"Sanitary Toilets", percent:.4545}
+]
+
+const internetUsers = [
+  {name:"Internet Users", percent:.62}
+]
+
+const religions = [
+  {name:"Christian", percent:2.3/7.8},
+  {name:"Islam", percent:1.6/7.8},
+  {name:"Hinduism", percent:1.11/7.8},
+  {name:"No Religion", percent:1.1/7.8},
+  {name:"Buddhism", percent:.4/7.8},
+  {name:"Folk Religion", percent:.6/7.8},
+  {name:"Shinto", percent:.027/7.8},
+  {name:"Sikhism", percent:.024/7.8},
+  {name:"Judaism", percent:.014/7.8},
+  {name:"Janism", percent:.008/7.8},
+  {name:"Bahai Faith", percent:.0073/7.8},
+  {name:"Cao Dai", percent:.001/7.8},
+  {name:"Cheondoism", percent:.003/7.8},
+  {name:"Tenrikyo", percent:.002/7.8},
+  {name:"Wicca", percent:.001/7.8},
+  {name:"Church of World Messianity", percent:.001/7.8},
+]
+
 function fillUp(array) {
   let sum = 0;
   for (let i = 0; i < array.length; i++) {
     sum += array[i].percent;
   }
-  array.push({ name: 'other', percent: 1 - sum })
+  array.push({ name: 'Other', percent: 1 - sum })
 }
 
-fillUp(continentPercents);
-fillUp(churchMembership);
-fillUp(languagePercents);
-fillUp(englishSpeakingPercent);
+// fillUp(continentPercents);
+// fillUp(churchMembership);
+// fillUp(languagePercents);
+// fillUp(englishSpeakingPercent);
+// fillUp(worldExtremePoverty);
 
 
 let arrays = [
-  { partition: "everyone", array: everyone },
-  { partition: "gender", array: genderPercents, colors: ["pink", "lightblue"] },
-  { partition: "continent", array: continentPercents },
-  { partition: "churchMembership", array: churchMembership },
-  { partition: "languagePercents", array: languagePercents },
-  { partition: "englishSpeakingPercent", array: englishSpeakingPercent },
+  { partition: "Everyone", array: everyone },
+  { partition: "Gender", array: genderPercents },
+  { partition: "Continent Population", array: continentPercents },
+  { partition: "Chunch Membership", array: churchMembership },
+  { partition: "Native Languages", array: languagePercents },
+  { partition: "Native English Speakers", array: englishSpeakingPercent },
+  { partition: "World Extreme Poverty", array: worldExtremePoverty },
+  { partition: "Sanitary Toilets", array: sanitaryToilets },
+  { partition: "Internet Users", array: internetUsers },
+  { partition: "Religions", array: religions },
 ];
+
+for(let a=0; a < arrays.length; a++){
+  let array = arrays[a];
+  fillUp(array.array);
+}

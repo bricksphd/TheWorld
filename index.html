@@ -31,9 +31,8 @@
       return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')
     }
 
-
-    let partition = "everyone";
-    let squareofSquares = 33;
+    let partition = "Everyone";
+    let squareofSquares = 88;
     let squares = squareofSquares * squareofSquares;
     let worldPopulation = 7_800_000_000;
     let peoplePerSquare = worldPopulation / squares;
@@ -43,8 +42,6 @@
     const width = 800;
     const height = 800;
     const margin = 2;
-
-
 
     //Populate the selector (combo box/drop down)
     let selector = document.getElementById("selector");
@@ -64,7 +61,6 @@
       });
     }
 
-
     for (let a = 0; a < arrays.length; a++) {
       let array = arrays[a];
       let sumPercent = 0;
@@ -75,7 +71,6 @@
       for (let i = 0; i < squares; i++) {
         let fact = facts[i];
         while (fact.percentEnd - (cummulativePercent + array.array[percentIndex].percent) > .0000001) {
-        // while (fact.percentEnd > cummulativePercent + array.array[percentIndex].percent) {
           cummulativePercent += array.array[percentIndex].percent;
           percentIndex++;
           if (!(x == 0 && y == 0)) {
@@ -85,26 +80,18 @@
             }
           }
         }
-        // if (fact.percentEnd <= cummulativePercent + array.array[percentIndex].percent) {
-          let partition = array.partition;
-          fact[partition] = {};
-          fact[partition].type = array.array[percentIndex].name;
-          fact[partition].x = x;
-          fact[partition].y = y;
-          x++;
-          if (x >= squareofSquares) {
-            x = 0;
-            y++;
-          }
-        // }
-        // else {
-        //   console.error("You shouldn't be here.")
-        // }
-
+        let partition = array.partition;
+        fact[partition] = {};
+        fact[partition].type = array.array[percentIndex].name;
+        fact[partition].x = x;
+        fact[partition].y = y;
+        x++;
+        if (x >= squareofSquares) {
+          x = 0;
+          y++;
+        }
       }
     }
-
-
 
     //Setup the svg elemente
     const svg = d3.select('#mySVG');
@@ -112,15 +99,29 @@
     svg.attr('height', height);
     const base = svg.append('g');
 
+    //Create the list of colors
+    let colors = d3.schemeCategory10;
+
+    // Tooltip from http://bl.ocks.org/biovisualize/1016860
+    var tooltip = d3.select("body")
+      .append("div")
+      .style("position", "absolute")
+      .style("z-index", "10")
+      .style("visibility", "hidden")
+      .style('font-size', '4rem')
+      .style('text-shadow', '1px 1px white')
+      .text("a simple tooltip");
+
     //Called when the selector changes
     function plot() {
       const totalMarginX = (squareofSquares + 1) * margin;
-      //const totalMarginY = (squareofSquares + arrays.find(a=>a.partition == partition).array.length) * margin; //Add 1 for the split
       const totalMarginY = (Math.max(...facts.map(f => f[partition].y)) + 1) * margin; //Add 1 for the split
       const totalSquaresX = width - totalMarginX;
       const totalSquaresY = height - totalMarginY;
       const squareX = totalSquaresX / squareofSquares;
       const squareY = totalSquaresY / (Math.max(...facts.map(f => f[partition].y)) + 1);
+
+      let array = arrays.find(a => a.partition == partition);
 
       const t = d3.transition()
         .duration(20000)
@@ -134,24 +135,27 @@
           update => update,
           exit => exit.remove(),
         )
-        .style("fill", (d, i) => {
-          let color = "black";
-          return color;
-        })
+        .on("mouseover", function (d) { tooltip.text( d[partition].type); tooltip.style("visibility", "visible"); })
+        .on("mousemove", function () { return tooltip.style("top", (event.pageY - 10) + "px").style("left", (event.pageX + 10) + "px"); })
+        .on("mouseout", function () { return tooltip.style("visibility", "hidden"); })
         .transition()
         .duration(2000)
+        .style("fill", (d, i) => {
+          //let color = "black";
+          let index = array.array.map(a => a.name).indexOf(d[partition].type);
+          let color = colors[index % colors.length];
+          return color;
+        })
         .attr("width", squareX)
         .attr("height", squareY)
-        
+
         .attr('transform', d => {
           let value = d[partition];
           return `translate(${value.x * (squareX + margin)} ${value.y * (squareY + margin)})`;
         })
 
     };
-
     plot();
-
     function comboChange(value) {
       console.log(value);
       partition = value;
