@@ -4,25 +4,60 @@
 <head>
   <meta charset='utf-8'>
   <meta http-equiv='X-UA-Compatible' content='IE=edge'>
-  <title>Binary Tree</title>
+  <title>The World</title>
   <meta name='viewport' content='width=device-width, initial-scale=1'>
   <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/5.9.7/d3.min.js"></script>
   <style>
+    html{
+      height: 100%; 
+      margin: 5px;
+      padding: 0;
+    }
+    body {
+      margin: 5px;
+      height:100%;
+      padding: 0;
+    }
+
     .circle-text {
       fill: white;
       text-anchor: middle;
       font-family: 'Roboto', sans-serif;
       transform: translate(0, 3px);
     }
+
+    .flex-container {
+      height: 100%;
+      display: flex;
+      align-items: center;
+      flex-direction: row;
+      flex-wrap: wrap;
+      justify-content: space-around;
+      text-align: center;
+      margin: 0;
+      padding: 0;
+      border:0;
+    }
+    .shrink{
+      margin:0;
+      padding:0;
+      border:0;
+    }
   </style>
 </head>
 
 <body>
-  <svg width="500" height="500" id="mySVG"></svg>
-  <div id="population"></div>
-  <select id="selector" onchange=comboChange(this.value)>
-  </select>
+  <div class="flex-container">
+    <div class="shrink">
+      <svg id="mySVG"></svg>
+    </div>
+    <div class="center-text">
+      <div id="population"></div>
+      <select id="selector" onchange=comboChange(this.value)>
+      </select>
+    </div>
+  </div>
   <script src="./data.js"></script>
   <script>
 
@@ -97,6 +132,23 @@
     const svg = d3.select('#mySVG');
     svg.attr('width', width);
     svg.attr('height', height);
+    svg.attr("viewBox", `0 0 800 800`)
+
+
+    function resize() {
+      //let size = 800;
+      let scrollHeight = document.body.scrollHeight;
+      let clientHeight = document.body.clientHeight;
+
+      size = clientHeight - 20 - margin*2;
+      svg.attr('width', size);
+      svg.attr('height', size);
+      console.log(size);
+    }
+
+    window.addEventListener('resize', resize);
+    resize();
+
     const base = svg.append('g');
 
     //Create the list of colors
@@ -135,7 +187,7 @@
           update => update,
           exit => exit.remove(),
         )
-        .on("mouseover", function (d) { tooltip.text( d[partition].type); tooltip.style("visibility", "visible"); })
+        .on("mouseover", function (d) { tooltip.text(d[partition].type); tooltip.style("visibility", "visible"); })
         .on("mousemove", function () { return tooltip.style("top", (event.pageY - 10) + "px").style("left", (event.pageX + 10) + "px"); })
         .on("mouseout", function () { return tooltip.style("visibility", "hidden"); })
         .transition()
