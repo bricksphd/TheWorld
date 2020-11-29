@@ -62,7 +62,7 @@ const englishSpeakingPercent = [
 ]
 
 const worldExtremePoverty = [
-  {name:"Living Extreme Poverty", percent:.1},
+  {name:"Living Extreme Poverty", percent:.08},
 ]
 
 const sanitaryToilets = [
@@ -74,22 +74,27 @@ const internetUsers = [
 ]
 
 const religions = [
-  {name:"Christian", percent:2.3/7.8},
-  {name:"Islam", percent:1.6/7.8},
-  {name:"Hinduism", percent:1.11/7.8},
-  {name:"No Religion", percent:1.1/7.8},
-  {name:"Buddhism", percent:.4/7.8},
-  {name:"Folk Religion", percent:.6/7.8},
-  {name:"Shinto", percent:.027/7.8},
-  {name:"Sikhism", percent:.024/7.8},
-  {name:"Judaism", percent:.014/7.8},
-  {name:"Janism", percent:.008/7.8},
-  {name:"Bahai Faith", percent:.0073/7.8},
-  {name:"Cao Dai", percent:.001/7.8},
-  {name:"Cheondoism", percent:.003/7.8},
-  {name:"Tenrikyo", percent:.002/7.8},
-  {name:"Wicca", percent:.001/7.8},
-  {name:"Church of World Messianity", percent:.001/7.8},
+  {name:"Christian", percent:2.168/7.79},
+  {name:"Islam", percent:1.599/7.79},
+  {name:"No Religion", percent:1.193/7.79},
+  {name:"Hinduism", percent:1.161/7.79},
+  {name:"Buddhism", percent:.506/7.79},
+  {name:"Chinese Traditional Religions", percent:.394/7.79},
+  {name:"Ethnic Religions", percent:.3/7.79},
+  {name:"Aftrican Traditional Religions", percent:.1/7.79},
+  {name:"Sikhism", percent:.026/7.79},
+  {name:"Spiritism", percent:.015/7.79},
+  {name:"Judaism", percent:.0147/7.79},
+  {name:"Baha'i", percent:.005/7.79},
+  {name:"Janism", percent:.0042/7.79},
+  {name:"Shinto", percent:.004/7.79},
+  {name:"Cao Dai", percent:.004/7.79},
+  {name:"Zoroastrianism", percent:.0026/7.79},
+  {name:"Tenrikyo", percent:.002/7.79},
+  {name:"Animism", percent:.0019/7.79},
+  {name:"Neo-Paganism", percent:.001/7.79},
+  {name:"Unitarian Universalism", percent:.0008/7.79},
+  {name:"Rastafari", percent:.0006/7.79}
 ]
 
 function fillUp(array) {
@@ -100,11 +105,6 @@ function fillUp(array) {
   array.push({ name: 'Other', percent: 1 - sum })
 }
 
-// fillUp(continentPercents);
-// fillUp(churchMembership);
-// fillUp(languagePercents);
-// fillUp(englishSpeakingPercent);
-// fillUp(worldExtremePoverty);
 
 
 let arrays = [
@@ -112,12 +112,12 @@ let arrays = [
   { partition: "Gender", array: genderPercents },
   { partition: "Continent Population", array: continentPercents },
  // { partition: "Chunch Membership", array: churchMembership },
-  { partition: "Native Languages", array: languagePercents },
-  { partition: "Native English Speakers", array: englishSpeakingPercent },
-  { partition: "World Extreme Poverty", array: worldExtremePoverty },
-  { partition: "Sanitary Toilets", array: sanitaryToilets },
+  { partition: "Native Languages", array: languagePercents, shortSource: 'Wikipedia', source:'https://en.wikipedia.org/wiki/List_of_languages_by_number_of_native_speakers', comments:['Languages grouped by branch, whith the exception of romance languages, which are listed individually.'], updated:'November, 2020' },
+  { partition: "Native English Speakers", array: englishSpeakingPercent, shortSource: 'Wikipedia', source:'https://en.wikipedia.org/wiki/List_of_languages_by_number_of_native_speakers', comments:['Languages grouped by branch, whith the exception of romance languages, which are listed individually.'], updated:'November, 2020' },
+  { partition: "World Extreme Poverty", array: worldExtremePoverty, shortSource:'United Nations', source:'https://www.un.org/en/sections/issues-depth/poverty/', comments:['From the UN website: "In 2018, almost 8 per cent of the world’s workers and their families lived on less than US$1.90 per person per day."'], updated:"November, 2020" },
+  { partition: "Sanitary Toilets", array: sanitaryToilets, shortSource:'United Nations', source:'https://www.un.org/en/observances/toilet-day', comments:['From the UN website, "4.2 billion people living without access to safely managed sanitation." '], updated: 'November, 2020' },
   { partition: "Internet Users", array: internetUsers },
-  { partition: "Religions", array: religions },
+  { partition: "Religions", array: religions, sourceShort:'Wikipedia', source:'https://en.wikipedia.org/wiki/List_of_religious_populations', comments:['Note that these numbers can change dramatically depending on the source.'], updated:'November 2020' },
 ];
 
 for(let a=0; a < arrays.length; a++){

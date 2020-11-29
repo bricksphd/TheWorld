@@ -32,20 +32,23 @@
       text-align: center;
 
     }
-    .world-heading{
-      font-size:3rem;
-      margin-bottom:2rem;
+
+    .world-heading {
+      font-size: 3rem;
+      margin-bottom: 2rem;
     }
-    .world-population{
-      margin-bottom:1rem;
-      font-size:1.5rem;
+
+    .world-population {
+      margin-bottom: 1rem;
+      font-size: 1.5rem;
     }
-    select{
-      font-family:'Raleway', sans-serif;
-      font-size:1rem;
-      border-top:0px;
-      border-right:0px;
-      border-left:0px;
+
+    select {
+      font-family: 'Raleway', sans-serif;
+      font-size: 1rem;
+      border-top: 0px;
+      border-right: 0px;
+      border-left: 0px;
     }
 
     .shrink {
@@ -53,9 +56,23 @@
       padding: 0;
       border: 0;
     }
-    .center-text{
+
+    .center-text {
       text-align: center;
-      padding:2rem;
+      padding: 2rem;
+    }
+
+    .comments {
+      width:300px;
+      text-align:left;
+      margin-top:.5rem;
+      margin-bottom:.5rem;
+      font-style:italic;
+    }
+
+    .source-wrapper {
+      margin-top:.5rem;
+      margin-bottom:.5rem;
     }
   </style>
 </head>
@@ -70,6 +87,15 @@
       <div class="world-population" id="population"></div>
       <select id="selector" onchange=comboChange(this.value)>
       </select>
+      <div class="source-wrapper">
+        <span>Source: </span>
+        <span id="none">None</span>
+        <a href='' id="source" class="source" target="blank"><span id="shortSource" class="shortSource"></span></a>
+      </div>
+      <div id="comments" class="comments"></div>
+      <div class="updated-wrappen">
+        <span >Updated: </span><span id="updated"></span>
+      </div>
     </div>
   </div>
   <script src="./data.js"></script>
@@ -225,11 +251,43 @@
         })
 
     };
-    plot();
+    beforePlot();
+
+    function beforePlot(){
+      let array = arrays.find(a => a.partition == partition);
+      if (array.source){
+        document.getElementById('source').href = array.source;
+        document.getElementById('none').style.display = "none";
+        document.getElementById('source').style.display = "initial";
+      }
+      else{
+        document.getElementById('source').href = '#'
+        document.getElementById('none').style.display = "initial";
+        document.getElementById('source').style.display = "none";
+      }
+
+      if (array.shortSource)
+        document.getElementById('shortSource').innerText = array.shortSource;
+      else
+        document.getElementById('shortSource').innerText = 'None'
+
+      if (array.updated)
+        document.getElementById('updated').innerText = array.updated;
+      else
+        document.getElementById('updated').innerText = 'Unknown'
+
+      if (array.comments)
+        document.getElementById('comments').innerText = array.comments.join('\n');
+      else
+        document.getElementById('comments').innerText = ''
+      plot();
+    }
     function comboChange(value) {
       console.log(value);
       partition = value;
-      plot();
+      
+
+      beforePlot();
     }
   </script>
 </body>
