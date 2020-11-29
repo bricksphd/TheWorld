@@ -17,9 +17,9 @@ const continentPercents = [
   { name: "Oceania", percent: .0054 },
 ]
 
-const churchMembership = [
-  { name: "Member of the Church of Jesus Christ of Latter-day Saints", percent: .0022 }
-];
+// const churchMembership = [
+//   { name: "Member of the Church of Jesus Christ of Latter-day Saints", percent: .0022 }
+// ];
 
 //https://en.wikipedia.org/wiki/List_of_languages_by_number_of_native_speakers#:~:text=Languages%20with%20at%20least%2010%20million%20first-language%20speakers,%20%20Indo-European%20%2037%20more%20rows%20
 const languagePercents = [
@@ -111,7 +111,7 @@ let arrays = [
   { partition: "Everyone", array: everyone },
   { partition: "Gender", array: genderPercents },
   { partition: "Continent Population", array: continentPercents },
-  { partition: "Chunch Membership", array: churchMembership },
+ // { partition: "Chunch Membership", array: churchMembership },
   { partition: "Native Languages", array: languagePercents },
   { partition: "Native English Speakers", array: englishSpeakingPercent },
   { partition: "World Extreme Poverty", array: worldExtremePoverty },
