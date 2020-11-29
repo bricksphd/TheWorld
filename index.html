@@ -1,16 +1,20 @@
 <!DOCTYPE html>
 <html>
+
 <head>
   <meta charset='utf-8'>
   <meta http-equiv='X-UA-Compatible' content='IE=edge'>
   <title>The World</title>
   <meta name='viewport' content='width=device-width, initial-scale=1'>
-  <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Raleway&display=swap" rel="stylesheet">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/5.9.7/d3.min.js"></script>
+  <link rel="shortcut icon" href="./favicon/favicon.ico" type="image/x-icon">
   <style>
     html {
       height: calc(100% - 10px);
       margin: 5px;
+      font-family: 'Raleway', sans-serif;
     }
 
     body {
@@ -28,11 +32,30 @@
       text-align: center;
 
     }
+    .world-heading{
+      font-size:3rem;
+      margin-bottom:2rem;
+    }
+    .world-population{
+      margin-bottom:1rem;
+      font-size:1.5rem;
+    }
+    select{
+      font-family:'Raleway', sans-serif;
+      font-size:1rem;
+      border-top:0px;
+      border-right:0px;
+      border-left:0px;
+    }
 
     .shrink {
       margin: 0;
       padding: 0;
       border: 0;
+    }
+    .center-text{
+      text-align: center;
+      padding:2rem;
     }
   </style>
 </head>
@@ -43,7 +66,8 @@
       <svg id="mySVG"></svg>
     </div>
     <div class="center-text">
-      <div id="population"></div>
+      <div class="world-heading">The World</div>
+      <div class="world-population" id="population"></div>
       <select id="selector" onchange=comboChange(this.value)>
       </select>
     </div>
@@ -62,7 +86,7 @@
     let worldPopulation = 7_800_000_000;
     let peoplePerSquare = worldPopulation / squares;
     console.log(peoplePerSquare);
-    document.getElementById("population").innerText = "Each square represents " + formatNumber(Math.ceil(peoplePerSquare)) + " people."
+    document.getElementById("population").innerText = "Each square represents\n " + formatNumber(Math.ceil(peoplePerSquare)) + " people."
 
     const width = 800;
     const height = 800;
@@ -131,7 +155,7 @@
       let clientHeight = document.body.clientHeight;
 
       let sizeHeight = clientHeight - 20 - margin * 2;
-      let sizeWidth = document.body.clientWidth - 20 - margin*2;
+      let sizeWidth = document.body.clientWidth - 20 - margin * 2;
       let size = Math.min(sizeHeight, sizeWidth);
       svg.attr('width', size);
       svg.attr('height', size);
