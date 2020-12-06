@@ -16,30 +16,47 @@
       font-family: 'Roboto', sans-serif;
     }
 
-    body {
-      margin: 0px;
-      overflow:hidden;
-      
+    html {
+      /* height: 100%; */
     }
 
-    #face{
-      height:640px;
+    body {
+      margin: 0px;
+      overflow: hidden;
+      display: flex;
+      min-height: 100vh;
+      flex-direction: column;
+
+    }
+
+    #face {
+      height:calc(100vh - 200px);
     }
 
     #text {
-      position: fixed;
-      bottom: 0px;
       width: 100%;
-      font-size: 3rem;
+      font-size: 5vw;
+      height:200px;
+      line-height: 100px;
     }
-    
+
+    .main {
+      flex: 1;
+    }
   </style>
 </head>
 
 <body>
-  <img id="face" >
-  <div id="text"></div>
-  <div id="about"></div>
+  <div class="main">
+    <div>
+      <img id="face">
+    </div>
+    <div>
+      <div id="text"></div>
+    </div>
+
+    <div id="about"></div>
+  </div>
   <script>
     let textArray = [
       "How many people live in the world?",
@@ -55,14 +72,21 @@
     let faceIndex = 0;
     function updateFace() {
       let faceIndexString = "" + faceIndex;
-      document.getElementById("face").src = "./faces/face" + (faceIndexString.padStart(2, "0")) + ".jpg"
+      let url = "./faces/face" + (faceIndexString.padStart(2, "0")) + ".jpg";
+      let element = document.getElementById("face");
+      element.src = url;
+      let ratio = element.width/element.height
+      if(Math.abs(2/3 - ratio) > .1)
+      console.log(Math.abs(2/3 - ratio) + " " + ratio + " " + url);
       faceIndex++;
-      if (faceIndex > 23)
+      if (faceIndex > 195)
         faceIndex = 0;
     }
     //updateFace();
 
     setInterval(updateFace, 1000 / 2.5);
+    //setInterval(updateFace, 1000 );
+    updateFace();
 
     let textIndex = 0;
     function updateText() {
@@ -73,7 +97,7 @@
     }
     setTimeout(updateText, initialTextPause * 1000);
 
-    function aboutText(){
+    function aboutText() {
       document.getElementById("text").innerText = "All images courtesy pexels.com.";
       document.getElementById("text").style.color = "lightgray";
       document.getElementById("text").style.fontSize = "1.5rem";
