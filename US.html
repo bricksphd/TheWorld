@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset='utf-8'>
+  <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@100&display=swap" rel="stylesheet">
+  <title>Pictures of Every Person</title>
+  <meta name='viewport' content='width=device-width, initial-scale=1'>
+  <link type="text/css" rel="stylesheet" href="./facesStyle.css">
+</head>
+
+<body>
+  <div class="main">
+    <div>
+      <img id="face">
+    </div>
+    <div>
+      <div id="text"></div>
+    </div>
+
+    <div id="about"></div>
+  </div>
+  <script src="./lib/lodash@4.17.min.js"></script>
+  <script>
+    let max = 195;
+    let USProbability = 320 / 7800;
+    let textArray = [
+      "How many people live in the world?",
+      "To see everyone",
+      "You would need to see",
+      "2.5 people a second",
+      "For 100 years",
+      "To see us all.",
+      "",
+    ]
+    let order = [];
+    for (let i = 0; i <= max; i++) {
+      order.push(i);
+    }
+    order = _.shuffle(order);
+
+    let textPause = 2;
+    let initialTextPause = 2;
+    let faceIndex = 0;
+    function updateFace() {
+      let faceIndexString = "" + order[faceIndex];
+
+      let url;
+      let r = Math.random();
+      console.log(r);
+      if (r < USProbability) {
+        url = "./flags/US.jpg";
+      }
+      else {
+        url = "./faces/face" + (faceIndexString.padStart(2, "0")) + ".jpg";
+      }
+      let element = document.getElementById("face");
+      element.src = url;
+      let ratio = element.width / element.height
+      faceIndex++;
+      if (faceIndex > 195) {
+        faceIndex = 0;
+      }
+    }
+
+    setInterval(updateFace, 1000 / 2.5);
+    updateFace();
+
+    let textIndex = 0;
+    function updateText() {
+      document.getElementById("text").innerText = textArray[textIndex];
+      textIndex++;
+      if (textIndex < textArray.length)
+        setTimeout(updateText, textPause * 1000);
+    }
+    setTimeout(updateText, initialTextPause * 1000);
+
+    function aboutText() {
+      document.getElementById("text").innerText = "All images courtesy pexels.com.";
+      document.getElementById("text").style.color = "lightgray";
+      document.getElementById("text").style.fontSize = "1.5rem";
+    }
+
+    function aboutTextClose() {
+      document.getElementById("text").innerText = "99 years, 364 days, 23 hours, 59 minutes to go...";
+      document.getElementById("text").style.color = "lightgray";
+      document.getElementById("text").style.fontSize = "1.5rem";
+    }
+    let aboutTextStart = initialTextPause * 1000 + textPause * 1000 * textArray.length + 4 * 1000;
+    let aboutTextEnd = aboutTextStart + 1000;
+    setTimeout(aboutText, aboutTextStart);
+    setTimeout(aboutTextClose, aboutTextEnd);
+  </script>
+
+
+</body>
+
+</html>
