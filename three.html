@@ -50,8 +50,8 @@
       controls.update();
 
       //Create an axis helper and add it to the scene
-      var axesHelper = new THREE.AxesHelper(2);
-      scene.add(axesHelper);
+      //var axesHelper = new THREE.AxesHelper(2);
+      //scene.add(axesHelper);
 
       //createFaces
       createFaces();
@@ -61,31 +61,50 @@
     }
 
     let spacing = 10;
-    let tick = 33/1000;
-    let delta = 1/2.5;
+    let tick = 33 / 1000;
+    let delta = 1 / 2.5;
 
-    const planes = [];
-    function createFaces() {
-      for (let i = 0; i < 195; i++) {
-        const loader = new THREE.TextureLoader();
-        const material = new THREE.MeshBasicMaterial({
-          map: loader.load(`faces2/face${("" + i).padStart(2,"0")}.jpg`),
-        });
-        const geometry = new THREE.PlaneGeometry(32, 48);
-        const plane = new THREE.Mesh(geometry, material);
-        plane.position.set(0,0,-spacing * i)
-        planes.push(plane);
-        scene.add(plane);
-      }
-
+    function loadModel(url) {
+      return new Promise(resolve => {
+        new THREE.TextureLoader().load(url, resolve);
+      });
     }
 
-    function update(){
-      let speed = tick * spacing/delta;
-      for(let i= 0; i < planes.length; i++){
+    const planes = [];
+    const promises = [];
+    async function createFaces() {
+      let count = 195;
+      let loaded = 0;
+
+      for (let i = 0; i < count; i++) {
+        const loader = new THREE.TextureLoader();
+        //let texture = await 
+        let promise = loadModel(`faces2/face${("" + i).padStart(2, "0")}.jpg`)
+        promises.push(promise);
+      }
+      Promise.all(promises)
+        .then(results => {
+          for (let i = 0; i < results.length; i++) {
+            const material = new THREE.MeshBasicMaterial({
+              map: results[i]
+
+            });
+
+            const geometry = new THREE.PlaneGeometry(32, 48);
+            const plane = new THREE.Mesh(geometry, material);
+            plane.position.set(0, 0, -spacing * i)
+            planes.push(plane);
+            scene.add(plane);
+          }
+        })
+    }
+
+    function update() {
+      let speed = tick * spacing / delta;
+      for (let i = 0; i < planes.length; i++) {
         let plane = planes[i];
         plane.position.set(plane.position.x, plane.position.y, plane.position.z + speed);
-        if(plane.position.z > 10){
+        if (plane.position.z > 10) {
           plane.position.set(plane.position.x, plane.position.y, plane.position.z - planes.length * spacing);
 
         }
