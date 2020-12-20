@@ -1,0 +1,143 @@
+<html>
+
+<head>
+  <title>THREE.js Boilerplate</title>
+  <style>
+    * {
+      margin: 0;
+    }
+  </style>
+</head>
+
+<body>
+  <!-- The body has no elements, we generate these in code -->
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/96/three.min.js"></script>
+  <script src="https://cdn.rawgit.com/mrdoob/three.js/ce501ae2/examples/js/exporters/OBJExporter.js"></script>
+  <script src="https://cdn.rawgit.com/mrdoob/three.js/ce501ae2/examples/js/controls/OrbitControls.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.10/lodash.js"></script>
+
+  <script>
+    //Global variables
+    var camera, scene, renderer, controls;
+
+
+
+    //Load a texture from a file
+
+
+    //Create the geometry that we will see
+    //const geometry = new THREE.PlaneGeometry(64, 96);
+    //const plane = new THREE.Mesh(geometry, material);
+
+
+    function init() {
+      //Create a renderer object (which includes a canvas element)
+      renderer = new THREE.WebGLRenderer();
+      renderer.setPixelRatio(window.devicePixelRatio);
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      document.body.appendChild(renderer.domElement);
+
+      //Create a perspective camera
+      camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 1, 1000);
+      camera.position.set(0, 0, 40);
+
+      //Create a new scene (root of the scene graph)
+      scene = new THREE.Scene();
+
+      //Create a new set of controls
+      controls = new THREE.OrbitControls(camera);
+      controls.update();
+
+      //Create an axis helper and add it to the scene
+      var axesHelper = new THREE.AxesHelper(2);
+      scene.add(axesHelper);
+
+      //createFaces
+      createFaces();
+
+      //Add our geometry to the scene
+      //scene.add(plane);
+    }
+
+    let spacing = 10;
+    let tick = 33/1000;
+    let delta = 1/2.5;
+
+    const planes = [];
+    function createFaces() {
+      for (let i = 0; i < 195; i++) {
+        const loader = new THREE.TextureLoader();
+        const material = new THREE.MeshBasicMaterial({
+          map: loader.load(`faces2/face${("" + i).padStart(2,"0")}.jpg`),
+        });
+        const geometry = new THREE.PlaneGeometry(32, 48);
+        const plane = new THREE.Mesh(geometry, material);
+        plane.position.set(0,0,-spacing * i)
+        planes.push(plane);
+        scene.add(plane);
+      }
+
+    }
+
+    function update(){
+      let speed = tick * spacing/delta;
+      for(let i= 0; i < planes.length; i++){
+        let plane = planes[i];
+        plane.position.set(plane.position.x, plane.position.y, plane.position.z + speed);
+        if(plane.position.z > 10){
+          plane.position.set(plane.position.x, plane.position.y, plane.position.z - planes.length * spacing);
+
+        }
+      }
+    }
+
+    setInterval(update, 33);
+
+    //Draw the scene
+    function animate() {
+      //Call this function again when we are ready to render again
+      requestAnimationFrame(animate);
+
+      controls.update()
+      renderer.render(scene, camera);
+    }
+
+
+    //Handle the details of a windows resize
+    function resize() {
+
+      //--Update the canvas itself--
+      //Grab the canvas element the renderer created
+      let canvas = renderer.domElement;
+
+      //Assign the width and height to the canvas style
+      canvas.style.width = window.innerWidth + "px"
+      canvas.style.height = window.innerHeight + "px"
+
+      //Assign the width and heigh to the canvas itself
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+
+      //--Update the THREE.js objects
+      //Update the render object
+      renderer.setSize(canvas.width, canvas.height);
+
+      //Update the camera aspect ratio
+      camera.aspect = canvas.width / canvas.height;
+
+      //Upate the camera projection matrix
+      camera.updateProjectionMatrix();
+    }
+
+    window.addEventListener("resize", resize);
+
+
+    init();
+    resize();
+    animate();
+
+  </script>
+</body>
+
+</html>
